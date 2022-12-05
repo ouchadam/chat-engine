@@ -1,0 +1,34 @@
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    apply from: "dependencies.gradle"
+    repositories {
+        Dependencies._repositories.call(it)
+    }
+}
+rootProject.name = "chat-engine"
+
+include ':matrix:matrix'
+include ':matrix:common'
+include ':matrix:matrix-http'
+include ':matrix:matrix-http-ktor'
+include ':matrix:services:auth'
+include ':matrix:services:sync'
+include ':matrix:services:room'
+include ':matrix:services:push'
+include ':matrix:services:message'
+include ':matrix:services:device'
+include ':matrix:services:crypto'
+include ':matrix:services:profile'
+
+include ':matrix:store'
+
+include ':matrix:olm:olm-stub'
+include ':matrix:olm:olm'
+
+include ':core'
+
+include ':test-harness'
+
+include ':chat-engine'
+include ':chat-engine-test'
+include ':matrix-chat-engine'

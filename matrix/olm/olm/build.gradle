@@ -1,0 +1,14 @@
+plugins {
+    id 'kotlin'
+    id 'org.jetbrains.kotlin.plugin.serialization'
+}
+
+dependencies {
+    implementation Dependencies.mavenCentral.kotlinSerializationJson
+    implementation Dependencies.mavenCentral.kotlinCoroutinesCore
+
+    implementation project(":core")
+    implementation project(":matrix:services:crypto")
+    implementation project(":matrix:services:device")
+    compileOnly project(":matrix:olm:olm-stub")
+}

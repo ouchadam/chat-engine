@@ -1,0 +1,16 @@
+plugins {
+    id 'kotlin'
+    id 'java-test-fixtures'
+}
+
+dependencies {
+    implementation Dependencies.mavenCentral.kotlinCoroutinesCore
+    implementation project(":matrix:common")
+    implementation project(":chat-engine")
+    implementation Dependencies.mavenCentral.mockk
+
+    kotlinFixtures(it)
+    kotlinTest(it)
+    implementation testFixtures(project(":matrix:common"))
+    implementation testFixtures(project(":core"))
+}
