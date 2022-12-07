@@ -4,8 +4,8 @@ plugins {
 }
 
 dependencies {
-    api Dependencies.mavenCentral.kotlinCoroutinesCore
     api project(":core")
+    implementation Dependencies.mavenCentral.kotlinCoroutinesCore
     implementation project(":chat-engine")
 
     implementation project(":matrix:matrix")
@@ -28,5 +28,5 @@ dependencies {
     testImplementation(testFixtures(project(":matrix:services:message")))
     testImplementation(testFixtures(project(":matrix:common")))
     testImplementation(testFixtures(project(":core")))
-    testImplementation(testFixtures(project(":chat-engine")))
+    testImplementation project(":chat-engine-test")
 }
