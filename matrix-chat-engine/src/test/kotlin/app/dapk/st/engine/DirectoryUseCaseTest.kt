@@ -8,10 +8,10 @@ import app.dapk.st.matrix.sync.RoomOverview
 import fake.FakeCredentialsStore
 import fake.FakeRoomStore
 import fake.FakeSyncService
+import fake.aUserCredentials
 import fixture.aMatrixRoomOverview
 import fixture.aRoomMember
 import fixture.aTypingEvent
-import fixture.aUserCredentials
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first

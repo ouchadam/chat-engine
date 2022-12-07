@@ -100,7 +100,7 @@ class TestMatrix(
                 ProxyDeviceService(it)
             }
 
-            val olmAccountStore = OlmPersistenceWrapper(storeModule.olmStore(), base64)
+            val olmAccountStore = storeModule.olmStore(base64)
             val olm = OlmWrapper(
                 olmStore = olmAccountStore,
                 singletonFlows = SingletonFlows(coroutineDispatchers),

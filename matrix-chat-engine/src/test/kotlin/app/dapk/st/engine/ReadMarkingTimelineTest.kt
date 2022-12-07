@@ -4,6 +4,7 @@ import app.dapk.st.matrix.common.RoomId
 import app.dapk.st.matrix.common.UserId
 import fake.FakeCredentialsStore
 import fake.FakeRoomStore
+import fake.aUserCredentials
 import fixture.*
 import io.mockk.every
 import io.mockk.mockk

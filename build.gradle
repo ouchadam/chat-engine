@@ -161,8 +161,6 @@ ext.firebase = { dependencies, name ->
     } else {
         dependencies.implementation(project(":domains:firebase:$name"))
     }
-}\
-
-if (launchTask.contains("codeCoverageReport".toLowerCase())) {
-    apply from: 'tools/coverage.gradle'
 }
+
+apply from: 'tools/coverage.gradle'

@@ -26,7 +26,6 @@ dependencies {
 
     testImplementation(testFixtures(project(":matrix:services:sync")))
     testImplementation(testFixtures(project(":matrix:services:message")))
-    testImplementation(testFixtures(project(":matrix:common")))
     testImplementation(testFixtures(project(":core")))
     testImplementation project(":chat-engine-test")
 }
