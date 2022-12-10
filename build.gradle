@@ -52,12 +52,11 @@ ext.applyCommonAndroidParameters = { project ->
 ext.kotlinTest = { dependencies ->
     dependencies.testImplementation libs.kluent
     dependencies.testImplementation libs.kotlin.test
-    dependencies.testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.7.20"
     dependencies.testImplementation libs.mockk
-    dependencies.testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+    dependencies.testImplementation libs.kotlin.coroutines.test
 
-    dependencies.testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
-    dependencies.testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
+    dependencies.testImplementation libs.junit.jupiter.api
+    dependencies.testRuntimeOnly libs.junit.jupiter.engine
 }
 
 ext.kotlinFixtures = { dependencies ->

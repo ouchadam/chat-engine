@@ -23,7 +23,7 @@ dependencies {
     implementation project(":core")
     implementation libs.kotlin.serialization
     implementation libs.kotlin.coroutines
-    implementation "com.squareup.sqldelight:coroutines-extensions:1.5.4"
+    implementation libs.sqldelight.extensions
 
     kotlinFixtures(it)
     testImplementation(testFixtures(project(":core")))

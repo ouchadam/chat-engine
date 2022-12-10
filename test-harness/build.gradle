@@ -27,7 +27,7 @@ dependencies {
     testImplementation project(":matrix:services:crypto")
 
     testImplementation rootProject.files("external/jolm.jar")
-    testImplementation 'org.json:json:20220924'
+    testImplementation libs.json
 
     testImplementation libs.ktor.java
     testImplementation libs.sqldelight.test
