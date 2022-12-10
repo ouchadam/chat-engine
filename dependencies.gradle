@@ -16,6 +16,7 @@ def applyRepositories(repositories) {
                 includeGroup "org.slf4j"
                 includeGroup "org.objenesis"
                 includeGroup "org.opentest4j"
+                includeGroup "org.json"
                 includeGroup "org.ow2.asm"
                 includeGroup "org.hamcrest"
                 includeGroup "org.jacoco"
