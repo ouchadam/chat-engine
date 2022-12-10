@@ -2,14 +2,6 @@ plugins {
     alias(libs.plugins.kotlin) apply false
 }
 
-def launchTask = getGradle()
-        .getStartParameter()
-        .getTaskRequests()
-        .toString()
-        .toLowerCase()
-def isReleaseBuild = launchTask.contains("release")
-ext.isDebugBuild = !isReleaseBuild
-
 subprojects {
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
@@ -57,64 +49,6 @@ ext.applyCommonAndroidParameters = { project ->
     }
 }
 
-ext.applyLibraryModuleOptimisations = { project ->
-    project.android {
-        variantFilter { variant ->
-            if (variant.name == "debug") {
-                variant.ignore = true
-            }
-        }
-
-        buildFeatures {
-            buildConfig = false
-            dataBinding = false
-            aidl = false
-            renderScript = false
-            resValues = false
-            shaders = false
-            viewBinding = false
-        }
-    }
-}
-
-ext.applyCompose = { project ->
-    def dependencies = project.dependencies
-
-    dependencies.implementation Dependencies.google.androidxComposeUi
-    dependencies.implementation Dependencies.google.androidxComposeFoundation
-    dependencies.implementation Dependencies.google.androidxComposeMaterial
-    dependencies.implementation Dependencies.google.androidxComposeIconsExtended
-    dependencies.implementation Dependencies.google.androidxActivityCompose
-
-    def android = project.android
-    android.buildFeatures.compose = true
-    android.composeOptions {
-        kotlinCompilerExtensionVersion = Dependencies.google.kotlinCompilerExtensionVersion
-    }
-}
-
-ext.applyAndroidComposeLibraryModule = { project ->
-    applyAndroidLibraryModule(project)
-    applyCompose(project)
-}
-
-ext.applyAndroidLibraryModule = { project ->
-    applyLibraryPlugins(project)
-    applyCommonAndroidParameters(project)
-    applyLibraryModuleOptimisations(project)
-}
-
-ext.applyCrashlyticsIfRelease = { project ->
-    if (isReleaseBuild && !isFoss()) {
-        project.apply plugin: 'com.google.firebase.crashlytics'
-        project.afterEvaluate {
-            project.tasks.withType(com.google.firebase.crashlytics.buildtools.gradle.tasks.UploadMappingFileTask).configureEach {
-                it.googleServicesResourceRoot.set(project.file("src/release/res/"))
-            }
-        }
-    }
-}
-
 ext.kotlinTest = { dependencies ->
     dependencies.testImplementation libs.kluent
     dependencies.testImplementation libs.kotlin.test
@@ -130,24 +64,6 @@ ext.kotlinFixtures = { dependencies ->
     dependencies.testFixturesImplementation libs.mockk
     dependencies.testFixturesImplementation libs.kluent
     dependencies.testFixturesImplementation libs.kotlin.coroutines
-}
-
-ext.androidImportFixturesWorkaround = { project, fixtures ->
-    project.dependencies.testImplementation(project.dependencies.testFixtures(fixtures))
-    project.dependencies.testImplementation fixtures.files("build/libs/${fixtures.name}-test-fixtures.jar")
-    project.dependencies.testImplementation fixtures.files("build/libs/${fixtures.name}.jar")
-}
-
-ext.isFoss = {
-    return rootProject.hasProperty("foss")
-}
-
-ext.firebase = { dependencies, name ->
-    if (isFoss()) {
-        dependencies.implementation(project(":domains:firebase:$name-noop"))
-    } else {
-        dependencies.implementation(project(":domains:firebase:$name"))
-    }
 }
 
 apply from: 'tools/coverage.gradle'
