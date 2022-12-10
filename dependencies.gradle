@@ -19,6 +19,8 @@ def applyRepositories(repositories) {
                 includeGroup "org.json"
                 includeGroup "org.ow2.asm"
                 includeGroup "org.hamcrest"
+                includeGroup "org.sonatype"
+                includeGroup "org.sonatype.oss"
                 includeGroup "org.jacoco"
                 includeGroup "org.xerial"
                 includeGroup "net.java.dev.jna"
