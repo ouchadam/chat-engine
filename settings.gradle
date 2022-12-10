@@ -1,7 +1,7 @@
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    apply from: "dependencies.gradle"
-    applyCatalog(it)
+    apply from: "gradle/repositories.gradle"
+    applyRepositories(it)
 }
 rootProject.name = "chat-engine"
 

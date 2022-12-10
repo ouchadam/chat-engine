@@ -1,0 +1,30 @@
+ext.applyRepositories = { dependencyResolutionManagement ->
+    dependencyResolutionManagement.repositories {
+        mavenCentral {
+            content {
+                includeGroupByRegex "org\\.jetbrains.*"
+                includeGroupByRegex "com\\.squareup.*"
+                includeGroupByRegex "org\\.json.*"
+                includeGroupByRegex "org\\.junit.*"
+                includeGroup "org.amshove.kluent"
+                includeGroup "org.apiguardian"
+                includeGroup "org.slf4j"
+                includeGroup "org.objenesis"
+                includeGroup "org.opentest4j"
+                includeGroup "org.json"
+                includeGroup "org.ow2"
+                includeGroup "org.ow2.asm"
+                includeGroup "org.hamcrest"
+                includeGroup "org.sonatype"
+                includeGroup "org.sonatype.oss"
+                includeGroup "org.jacoco"
+                includeGroup "org.xerial"
+                includeGroup "net.java.dev.jna"
+                includeGroup "net.bytebuddy"
+                includeGroup "io.ktor"
+                includeGroup "io.mockk"
+                includeGroup "junit"
+            }
+        }
+    }
+}
