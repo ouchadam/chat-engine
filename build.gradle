@@ -118,7 +118,7 @@ ext.applyCrashlyticsIfRelease = { project ->
 ext.kotlinTest = { dependencies ->
     dependencies.testImplementation libs.kluent
     dependencies.testImplementation libs.kotlin.test
-    dependencies.testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.7.20"
+    dependencies.testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.7.22"
     dependencies.testImplementation libs.mockk
     dependencies.testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 
