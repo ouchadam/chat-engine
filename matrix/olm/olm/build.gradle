@@ -1,11 +1,11 @@
 plugins {
-    id 'kotlin'
-    id 'org.jetbrains.kotlin.plugin.serialization'
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 dependencies {
-    implementation Dependencies.mavenCentral.kotlinSerializationJson
-    implementation Dependencies.mavenCentral.kotlinCoroutinesCore
+    implementation libs.kotlin.serialization
+    implementation libs.kotlin.coroutines
 
     implementation project(":core")
     implementation project(":matrix:services:crypto")

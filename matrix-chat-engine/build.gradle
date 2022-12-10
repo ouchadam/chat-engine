@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     api project(":core")
-    implementation Dependencies.mavenCentral.kotlinCoroutinesCore
+    implementation libs.kotlin.coroutines
     implementation project(":chat-engine")
 
     implementation project(":matrix:matrix")

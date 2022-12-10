@@ -4,8 +4,8 @@ plugins {
 }
 
 dependencies {
-    api Dependencies.mavenCentral.ktorCore
-    implementation Dependencies.mavenCentral.kotlinSerializationJson
+    api libs.ktor
+    implementation libs.kotlin.serialization
 
     kotlinFixtures(it)
 }

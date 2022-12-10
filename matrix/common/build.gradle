@@ -1,11 +1,11 @@
 plugins {
-    id 'kotlin'
-    id 'org.jetbrains.kotlin.plugin.serialization'
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.kotlin.serialization)
     id 'java-test-fixtures'
 }
 
 dependencies {
-    implementation Dependencies.mavenCentral.kotlinSerializationJson
+    implementation libs.kotlin.serialization
 
     kotlinTest(it)
     kotlinFixtures(it)

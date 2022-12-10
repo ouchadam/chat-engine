@@ -1,6 +1,6 @@
 plugins {
-    id 'kotlin'
-    id 'org.jetbrains.kotlin.plugin.serialization'
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 test {
@@ -10,7 +10,7 @@ test {
 dependencies {
     kotlinTest(it)
 
-    testImplementation Dependencies.mavenCentral.kotlinSerializationJson
+    testImplementation libs.kotlin.serialization
 
     testImplementation project(":core")
     testImplementation project(":matrix:store")
@@ -29,6 +29,6 @@ dependencies {
     testImplementation rootProject.files("external/jolm.jar")
     testImplementation 'org.json:json:20220924'
 
-    testImplementation Dependencies.mavenCentral.ktorJava
-    testImplementation Dependencies.mavenCentral.sqldelightInMemory
+    testImplementation libs.ktor.java
+    testImplementation libs.sqldelight.test
 }

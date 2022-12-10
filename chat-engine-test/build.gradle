@@ -4,10 +4,10 @@ plugins {
 }
 
 dependencies {
-    implementation Dependencies.mavenCentral.kotlinCoroutinesCore
+    implementation libs.kotlin.coroutines
     implementation project(":matrix:common")
     implementation project(":chat-engine")
-    implementation Dependencies.mavenCentral.mockk
+    implementation libs.mockk
 
     kotlinFixtures(it)
     kotlinTest(it)
