@@ -14,39 +14,12 @@ subprojects {
     }
 }
 
-ext.applyMatrixServicePlugins = { plugins ->
-    plugins.alias(libs.plugins.kotlin)
-    plugins.alias(libs.plugins.kotlin.serialization)
-    plugins.id("java-test-fixtures")
-}
-
 ext.applyMatrixServiceModule = { project ->
     def dependencies = project.dependencies
     dependencies.api project.project(":matrix:matrix")
     dependencies.api project.project(":matrix:common")
     dependencies.implementation project.project(":matrix:matrix-http")
     dependencies.implementation libs.kotlin.serialization
-}
-
-ext.applyLibraryPlugins = { project ->
-    project.apply plugin: 'com.android.library'
-    project.apply plugin: 'kotlin-android'
-}
-
-ext.androidSdkVersion = 33
-
-ext.applyCommonAndroidParameters = { project ->
-    def android = project.android
-    android.compileSdk androidSdkVersion
-    android.compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-        incremental = true
-    }
-    android.defaultConfig {
-        minSdkVersion 24
-        targetSdkVersion androidSdkVersion
-    }
 }
 
 ext.kotlinTest = { dependencies ->
