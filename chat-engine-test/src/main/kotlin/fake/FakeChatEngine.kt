@@ -1,6 +1,7 @@
 package fake
 
 import app.dapk.st.engine.ChatEngine
+import app.dapk.st.engine.LoginRequest
 import app.dapk.st.matrix.common.RoomId
 import io.mockk.coEvery
 import io.mockk.every
@@ -18,4 +19,5 @@ class FakeChatEngine : ChatEngine by mockk() {
     fun givenNotificationsMessages() = every { notificationsMessages() }.delegateEmit()
     fun givenInvites() = every { invites() }.delegateEmit()
     fun givenMe(forceRefresh: Boolean) = coEvery { me(forceRefresh) }.delegateReturn()
+    fun givenLogin(loginRequest: LoginRequest) = coEvery { login(loginRequest) }.delegateReturn()
 }
