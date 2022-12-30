@@ -20,4 +20,5 @@ class FakeChatEngine : ChatEngine by mockk() {
     fun givenInvites() = every { invites() }.delegateEmit()
     fun givenMe(forceRefresh: Boolean) = coEvery { me(forceRefresh) }.delegateReturn()
     fun givenLogin(loginRequest: LoginRequest) = coEvery { login(loginRequest) }.delegateReturn()
+    fun givenIsSignedIn() = coEvery { isSignedIn() }.delegateReturn()
 }
