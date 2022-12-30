@@ -76,6 +76,10 @@ class RichTextMessageParserTest {
             expected = RichText(listOf(Normal("Hello world! foo's bar")))
         ),
         Case(
+            input = "Hello world! foo&#x27;s bar",
+            expected = RichText(listOf(Normal("Hello world! foo's bar")))
+        ),
+        Case(
             input = "Hello world! foo&apos;s bar",
             expected = RichText(listOf(Normal("Hello world! foo's bar")))
         ),

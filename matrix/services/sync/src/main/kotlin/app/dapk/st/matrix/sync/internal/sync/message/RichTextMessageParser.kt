@@ -27,7 +27,13 @@ class RichMessageParser(
 
 }
 
-private fun String.removeHtmlEntities() = this.replace("&quot;", "\"").replace("&#39;", "'").replace("&apos;", "'").replace("&amp;", "&")
+private fun String.removeHtmlEntities() = this
+    .replace("&quot;", "\"")
+    .replace("&#39;", "'")
+    .replace("&apos;", "'")
+    .replace("&apos;", "'")
+    .replace("&amp;", "&")
+    .replace("&#x27;", "'")
 
 private fun String.dropTextFallback() = this.lines()
     .dropWhile { it.startsWith("> ") || it.isEmpty() }
