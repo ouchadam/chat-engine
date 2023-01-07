@@ -54,7 +54,6 @@ fun MatrixServiceInstaller.installSyncService(
     roomMembersService: ServiceDepFactory<RoomMembersService>,
     errorTracker: ErrorTracker,
     coroutineDispatchers: CoroutineDispatchers,
-
     syncConfig: SyncConfig = SyncConfig(),
 ): InstallExtender<SyncService> {
     this.serializers {
@@ -146,5 +145,6 @@ suspend fun RoomMembersService.find(roomId: RoomId, userId: UserId): RoomMember?
 
 data class SyncConfig(
     val loopTimeout: Long = 30_000L,
-    val allowSharedFlows: Boolean = true
+    val allowSharedFlows: Boolean = true,
+    val enableWipVerification: Boolean = false,
 )

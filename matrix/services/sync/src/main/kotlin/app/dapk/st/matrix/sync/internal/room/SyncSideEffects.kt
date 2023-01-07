@@ -1,10 +1,7 @@
 package app.dapk.st.matrix.sync.internal.room
 
 import app.dapk.st.matrix.common.*
-import app.dapk.st.matrix.sync.DeviceNotifier
-import app.dapk.st.matrix.sync.KeySharer
-import app.dapk.st.matrix.sync.MaybeCreateMoreKeys
-import app.dapk.st.matrix.sync.VerificationHandler
+import app.dapk.st.matrix.sync.*
 import app.dapk.st.matrix.sync.internal.request.ApiSyncResponse
 import app.dapk.st.matrix.sync.internal.request.ApiToDeviceEvent
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +16,7 @@ internal class SyncSideEffects(
     private val json: Json,
     private val oneTimeKeyProducer: MaybeCreateMoreKeys,
     private val logger: MatrixLogger,
+    private val syncConfig: SyncConfig,
 ) {
 
     suspend fun blockingSideEffects(userId: UserId, response: ApiSyncResponse, requestToken: SyncToken?): SideEffectResult {
@@ -33,7 +31,9 @@ internal class SyncSideEffects(
             val decryptedToDeviceEvents = decryptedToDeviceEvents(response)
             val roomKeys = handleRoomKeyShares(decryptedToDeviceEvents)
 
-            checkForVerificationRequests(userId, decryptedToDeviceEvents)
+            if (syncConfig.enableWipVerification) {
+                checkForVerificationRequests(userId, decryptedToDeviceEvents)
+            }
             SideEffectResult(roomKeys?.map { it.roomId } ?: emptyList())
         }
     }
