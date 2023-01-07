@@ -283,7 +283,7 @@ class TestMatrix(
                 },
                 errorTracker = errorTracker,
                 coroutineDispatchers = coroutineDispatchers,
-                syncConfig = SyncConfig(loopTimeout = 500, allowSharedFlows = false)
+                syncConfig = SyncConfig(loopTimeout = 500, allowSharedFlows = false, enableWipVerification = true)
             )
             installPushService(storeModule.credentialsStore())
         }
