@@ -90,7 +90,7 @@ class MatrixEngine internal constructor(
         matrix.value.roomService().joinRoom(roomId)
     }
 
-    override suspend fun rejectJoinRoom(roomId: RoomId) {
+    override suspend fun rejectRoom(roomId: RoomId) {
         matrix.value.roomService().rejectJoinRoom(roomId)
     }
 

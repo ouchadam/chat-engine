@@ -28,7 +28,10 @@ interface ChatEngine : TaskRunner {
 
     suspend fun joinRoom(roomId: RoomId)
 
-    suspend fun rejectJoinRoom(roomId: RoomId)
+    /**
+     * Reject a room invite or leave an already joined room
+     */
+    suspend fun rejectRoom(roomId: RoomId)
 
     suspend fun findMembersSummary(roomId: RoomId): List<RoomMember>
 
