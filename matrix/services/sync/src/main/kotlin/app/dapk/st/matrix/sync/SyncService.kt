@@ -5,6 +5,7 @@ import app.dapk.engine.core.extensions.ErrorTracker
 import app.dapk.st.matrix.*
 import app.dapk.st.matrix.common.*
 import app.dapk.st.matrix.sync.internal.DefaultSyncService
+import app.dapk.st.matrix.sync.internal.SyncModule
 import app.dapk.st.matrix.sync.internal.request.*
 import app.dapk.st.matrix.sync.internal.room.MessageDecrypter
 import app.dapk.st.matrix.sync.internal.room.MissingMessageDecrypter
@@ -78,7 +79,7 @@ fun MatrixServiceInstaller.installSyncService(
     }
 
     return this.install { (httpClient, json, services, logger) ->
-        SERVICE_KEY to DefaultSyncService(
+        val syncModule = SyncModule(
             httpClient = httpClient,
             syncStore = syncStore,
             overviewStore = overviewStore,
@@ -90,7 +91,6 @@ fun MatrixServiceInstaller.installSyncService(
             deviceNotifier = deviceNotifier.create(services),
             json = json,
             oneTimeKeyProducer = oneTimeKeyProducer.create(services),
-            scope = CoroutineScope(coroutineDispatchers.io),
             credentialsStore = credentialsStore,
             roomMembersService = roomMembersService.create(services),
             logger = logger,
@@ -98,6 +98,17 @@ fun MatrixServiceInstaller.installSyncService(
             coroutineDispatchers = coroutineDispatchers,
             syncConfig = syncConfig,
             richMessageParser = RichMessageParser()
+        )
+
+        SERVICE_KEY to DefaultSyncService(
+            syncStore = syncStore,
+            overviewStore = overviewStore,
+            roomStore = roomStore,
+            scope = CoroutineScope(coroutineDispatchers.io),
+            credentialsStore = credentialsStore,
+            coroutineDispatchers = coroutineDispatchers,
+            syncConfig = syncConfig,
+            syncModule = syncModule
         )
     }
 }
