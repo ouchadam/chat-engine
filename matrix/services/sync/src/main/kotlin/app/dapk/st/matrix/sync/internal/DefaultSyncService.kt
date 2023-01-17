@@ -1,109 +1,31 @@
 package app.dapk.st.matrix.sync.internal
 
 import app.dapk.engine.core.CoroutineDispatchers
-import app.dapk.engine.core.extensions.ErrorTracker
 import app.dapk.engine.core.withIoContext
-import app.dapk.st.matrix.common.*
-import app.dapk.st.matrix.http.MatrixHttpClient
+import app.dapk.st.matrix.common.CredentialsStore
+import app.dapk.st.matrix.common.EventId
+import app.dapk.st.matrix.common.RoomId
 import app.dapk.st.matrix.sync.*
-import app.dapk.st.matrix.sync.internal.filter.FilterUseCase
-import app.dapk.st.matrix.sync.internal.overview.ReducedSyncFilterUseCase
-import app.dapk.st.matrix.sync.internal.room.MessageDecrypter
-import app.dapk.st.matrix.sync.internal.room.RoomEventsDecrypter
-import app.dapk.st.matrix.sync.internal.room.SyncEventDecrypter
-import app.dapk.st.matrix.sync.internal.room.SyncSideEffects
-import app.dapk.st.matrix.sync.internal.sync.*
-import app.dapk.st.matrix.sync.internal.sync.message.RichMessageParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
-import kotlinx.serialization.json.Json
-import java.util.concurrent.atomic.AtomicInteger
-
-private val syncSubscriptionCount = AtomicInteger()
 
 internal class DefaultSyncService(
-    httpClient: MatrixHttpClient,
     private val syncStore: SyncStore,
     private val overviewStore: OverviewStore,
     private val roomStore: RoomStore,
-    filterStore: FilterStore,
-    messageDecrypter: MessageDecrypter,
-    keySharer: KeySharer,
-    verificationHandler: VerificationHandler,
-    deviceNotifier: DeviceNotifier,
-    json: Json,
-    oneTimeKeyProducer: MaybeCreateMoreKeys,
     scope: CoroutineScope,
     private val credentialsStore: CredentialsStore,
-    roomMembersService: RoomMembersService,
-    logger: MatrixLogger,
-    errorTracker: ErrorTracker,
     private val coroutineDispatchers: CoroutineDispatchers,
     syncConfig: SyncConfig,
-    richMessageParser: RichMessageParser,
+    private val syncModule: SyncModule,
 ) : SyncService {
 
-    private val syncEventsFlow = MutableStateFlow<List<SyncService.SyncEvent>>(emptyList())
+    private val syncFlow by lazy { syncModule.syncUseCase.sync().share(syncConfig, scope) }
 
-    private val roomDataSource by lazy { RoomDataSource(roomStore, logger) }
-    private val eventDecrypter by lazy { SyncEventDecrypter(messageDecrypter, json, logger) }
-    private val roomEventsDecrypter by lazy { RoomEventsDecrypter(messageDecrypter, richMessageParser, json, logger) }
-    private val roomRefresher by lazy { RoomRefresher(roomDataSource, roomEventsDecrypter, logger) }
-
-    private val sync2 by lazy {
-        val roomDataSource = RoomDataSource(roomStore, logger)
-        val syncReducer = SyncReducer(
-            RoomProcessor(
-                roomMembersService,
-                roomDataSource,
-                TimelineEventsProcessor(
-                    RoomEventCreator(roomMembersService, errorTracker, RoomEventFactory(roomMembersService, richMessageParser), richMessageParser),
-                    roomEventsDecrypter,
-                    eventDecrypter,
-                    EventLookupUseCase(roomStore)
-                ),
-                RoomOverviewProcessor(roomMembersService),
-                UnreadEventsProcessor(roomStore, logger),
-                EphemeralEventsUseCase(roomMembersService, syncEventsFlow),
-            ),
-            roomRefresher,
-            roomDataSource,
-            logger,
-            errorTracker,
-            coroutineDispatchers,
-        )
-        SyncUseCase(
-            overviewStore,
-            SideEffectFlowIterator(logger, errorTracker),
-            SyncSideEffects(keySharer, verificationHandler, deviceNotifier, messageDecrypter, json, oneTimeKeyProducer, logger, syncConfig),
-            httpClient,
-            syncStore,
-            syncReducer,
-            credentialsStore,
-            logger,
-            ReducedSyncFilterUseCase(FilterUseCase(httpClient, filterStore)),
-            syncConfig,
-        )
-    }
-
-    private val syncFlow by lazy {
-        sync2.sync().let {
-            if (syncConfig.allowSharedFlows) {
-                it.shareIn(scope, SharingStarted.WhileSubscribed(5000))
-            } else {
-                it
-            }
-        }
-            .onStart {
-                val subscriptions = syncSubscriptionCount.incrementAndGet()
-                logger.matrixLog(MatrixLogTag.SYNC, "flow onStart - count: $subscriptions")
-            }
-            .onCompletion {
-                val subscriptions = syncSubscriptionCount.decrementAndGet()
-                logger.matrixLog(MatrixLogTag.SYNC, "flow onCompletion - count: $subscriptions")
-            }
+    private fun Flow<Unit>.share(config: SyncConfig, scope: CoroutineScope): Flow<Unit> {
+        return if (config.allowSharedFlows) this.shareIn(scope, SharingStarted.WhileSubscribed(5000)) else this
     }
 
     override fun startSyncing(): Flow<Unit> {
@@ -121,13 +43,16 @@ internal class DefaultSyncService(
     override fun invites() = overviewStore.latestInvites()
     override fun overview() = overviewStore.latest()
     override fun room(roomId: RoomId) = roomStore.latest(roomId)
-    override fun events(roomId: RoomId?) = roomId?.let { syncEventsFlow.map { it.filter { it.roomId == roomId } }.distinctUntilChanged() } ?: syncEventsFlow
+    override fun events(roomId: RoomId?) = roomId?.let { syncModule.syncEventsFlow.byRoomId(roomId) } ?: syncModule.syncEventsFlow
+
+    private fun MutableStateFlow<List<SyncService.SyncEvent>>.byRoomId(roomId: RoomId) = this.map { it.filter { it.roomId == roomId } }.distinctUntilChanged()
+
     override suspend fun observeEvent(eventId: EventId) = roomStore.observeEvent(eventId)
     override suspend fun forceManualRefresh(roomIds: Set<RoomId>) {
         coroutineDispatchers.withIoContext {
             roomIds.map {
                 async {
-                    roomRefresher.refreshRoomContent(it, credentialsStore.credentials()!!)?.also {
+                    syncModule.roomRefresher.refreshRoomContent(it, credentialsStore.credentials()!!)?.also {
                         overviewStore.persist(listOf(it.roomOverview))
                     }
                 }
