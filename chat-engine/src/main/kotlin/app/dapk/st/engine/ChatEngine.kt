@@ -1,9 +1,6 @@
 package app.dapk.st.engine
 
-import app.dapk.st.matrix.common.EventId
-import app.dapk.st.matrix.common.JsonString
-import app.dapk.st.matrix.common.RoomId
-import app.dapk.st.matrix.common.RoomMember
+import app.dapk.st.matrix.common.*
 import kotlinx.coroutines.flow.Flow
 import java.io.InputStream
 
@@ -43,6 +40,9 @@ interface ChatEngine : TaskRunner {
     suspend fun unmuteRoom(roomId: RoomId)
     suspend fun isSignedIn(): Boolean
     suspend fun preload()
+
+    suspend fun kickUserFromRoom(roomId: RoomId, userId: UserId)
+
 }
 
 interface TaskRunner {

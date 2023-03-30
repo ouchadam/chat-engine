@@ -94,6 +94,10 @@ class DefaultRoomService(
         roomInviteRemover.remove(roomId)
     }
 
+    override suspend fun kick(roomId: RoomId, userId: UserId, reason: String) {
+        httpClient.execute(kickFromRoomRequest(roomId, userId, reason))
+    }
+
     override suspend fun muteRoom(roomId: RoomId) {
         singleRoomStore.mute(roomId)
     }
@@ -140,6 +144,11 @@ internal fun rejectJoinRoomRequest(roomId: RoomId) = httpRequest<Unit>(
     body = emptyJsonBody()
 )
 
+internal fun kickFromRoomRequest(roomId: RoomId, userId: UserId, reason: String) = httpRequest<Unit>(
+    path = "_matrix/client/r0/rooms/${roomId.value}/kick",
+    method = MatrixHttpClient.Method.POST,
+    body = jsonBody(KickFromRoomRequest(userId, reason))
+)
 
 @Suppress("EnumEntryName")
 @Serializable
@@ -176,4 +185,10 @@ internal data class JoinedMembersResponse(
 internal data class ApiJoinedMember(
     @SerialName("display_name") val displayName: String? = null,
     @SerialName("avatar_url") val avatarUrl: String? = null,
+)
+
+@Serializable
+internal data class KickFromRoomRequest(
+    @SerialName("user_id") val userId: UserId,
+    @SerialName("reason") val reason: String,
 )
