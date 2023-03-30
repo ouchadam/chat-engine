@@ -8,10 +8,7 @@ import app.dapk.st.domain.MatrixStoreModule
 import app.dapk.st.matrix.MatrixClient
 import app.dapk.st.matrix.MatrixTaskRunner
 import app.dapk.st.matrix.auth.authService
-import app.dapk.st.matrix.common.CredentialsStore
-import app.dapk.st.matrix.common.MatrixLogger
-import app.dapk.st.matrix.common.RoomId
-import app.dapk.st.matrix.common.isSignedIn
+import app.dapk.st.matrix.common.*
 import app.dapk.st.matrix.crypto.MatrixMediaDecrypter
 import app.dapk.st.matrix.crypto.cryptoService
 import app.dapk.st.matrix.message.messageService
@@ -118,6 +115,10 @@ class MatrixEngine internal constructor(
         credentialsStore.credentials()?.let {
             matrix.value.messageService().preloadEchos()
         }
+    }
+
+    override suspend fun kickUserFromRoom(roomId: RoomId, userId: UserId) {
+        matrix.value.roomService().kick(roomId, userId, reason = "Kicked by admin")
     }
 
     override suspend fun runTask(task: ChatEngineTask): TaskRunner.TaskResult {

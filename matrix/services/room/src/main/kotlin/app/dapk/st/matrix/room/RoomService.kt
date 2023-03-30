@@ -25,6 +25,8 @@ interface RoomService : MatrixService {
     suspend fun joinRoom(roomId: RoomId)
     suspend fun rejectJoinRoom(roomId: RoomId)
 
+    suspend fun kick(roomId: RoomId, userId: UserId, reason: String)
+
     suspend fun muteRoom(roomId: RoomId)
     suspend fun unmuteRoom(roomId: RoomId)
     fun observeIsMuted(roomId: RoomId): Flow<Boolean>
