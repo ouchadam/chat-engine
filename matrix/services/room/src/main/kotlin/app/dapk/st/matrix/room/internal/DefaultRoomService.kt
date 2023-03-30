@@ -95,6 +95,7 @@ class DefaultRoomService(
     }
 
     override suspend fun kick(roomId: RoomId, userId: UserId, reason: String) {
+        logger.matrixLog("kicking $userId from $roomId")
         httpClient.execute(kickFromRoomRequest(roomId, userId, reason))
     }
 
