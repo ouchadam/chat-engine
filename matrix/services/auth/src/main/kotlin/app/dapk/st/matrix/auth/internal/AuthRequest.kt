@@ -61,7 +61,6 @@ internal data class Auth(
 @Serializable
 data class ApiAuthResponse(
     @SerialName("access_token") val accessToken: String,
-    @SerialName("home_server") val homeServer: String,
     @SerialName("user_id") override val userId: UserId,
     @SerialName("device_id") override val deviceId: DeviceId,
     @SerialName("well_known") val wellKnown: ApiWellKnown? = null,
